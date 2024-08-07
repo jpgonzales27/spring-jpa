@@ -1,16 +1,12 @@
 package com.juangonzales.projects.IntroSpringDataJpa;
 
-import jakarta.persistence.EntityManager;
+import com.juangonzales.projects.IntroSpringDataJpa.persistence.entity.Customer;
+import com.juangonzales.projects.IntroSpringDataJpa.persistence.repository.CustomerCrudRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
 
 @SpringBootApplication
 public class IntroSpringDataJpaApplication {
@@ -19,33 +15,36 @@ public class IntroSpringDataJpaApplication {
 		SpringApplication.run(IntroSpringDataJpaApplication.class, args);
 	}
 
+	@Autowired
+	private CustomerCrudRepository customerCrudRepository;
+
 	@Bean
-	public CommandLineRunner validateDSCommand(DataSource dataSource){
+	public CommandLineRunner testCustomerRepositoryCommand(){
 		return args -> {
-			System.out.println("\n Probando Conexión y DS\n");
-			Connection conn = dataSource.getConnection();
-			PreparedStatement pstm = conn.prepareStatement("select * from characters");
-			ResultSet rs = pstm.executeQuery();
-			while(rs.next()){
-				String mensaje = rs.getString("id") + " - " + rs.getString("nombre");
-				System.out.println(mensaje);
-			}
-			System.out.println("\n\n ");
+//			Customer juan = new Customer();
+//			juan.setName("Juan Gonzales");
+//			juan.setPassword("juan123");
+//
+//			customerCrudRepository.save(juan);
+//			System.out.println("Se guardo la entidad Juan");
+//
+//
+//			System.out.println("\n Imprimiendo todos los clientes");
+//			customerCrudRepository.findAll()
+//					.forEach(System.out::println);
+
+
+			System.out.println("\nBuscando e imprimiendo a cliente Juan");
+			customerCrudRepository.findById(1L)
+					.ifPresent(System.out::println);
+
+			System.out.println("\nEliminando al cliente Juan");
+			customerCrudRepository.deleteById(1L);
+
+			System.out.println("\nBuscando e imprimiendo a cliente Juan");
+			customerCrudRepository.findById(1L)
+					.ifPresent(System.out::println);
 		};
 	}
 
-	@Bean
-	public CommandLineRunner validateEntityManagerCommand(EntityManager em){
-		return args -> {
-			System.out.println("\nProbando EntityManagerFactory\n");
-			List<Object[]> result = em.createNativeQuery("select * from characters").getResultList();
-
-			result.forEach(each -> {
-				String mensaje = each[0] + " - " + each[1];
-				System.out.println(mensaje);
-			});
-			System.out.println("\n\n");
-
-		};
-	}
 }
