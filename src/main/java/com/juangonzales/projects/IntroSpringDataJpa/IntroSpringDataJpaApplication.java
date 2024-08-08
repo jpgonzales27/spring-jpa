@@ -2,6 +2,7 @@ package com.juangonzales.projects.IntroSpringDataJpa;
 
 import com.juangonzales.projects.IntroSpringDataJpa.persistence.entity.Address;
 import com.juangonzales.projects.IntroSpringDataJpa.persistence.entity.Customer;
+import com.juangonzales.projects.IntroSpringDataJpa.persistence.repository.AddressCrudRepository;
 import com.juangonzales.projects.IntroSpringDataJpa.persistence.repository.CustomerCrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -59,8 +60,17 @@ public class IntroSpringDataJpaApplication {
 
 			System.out.println("Se guardaron 3 entidades");
 			List<Customer> clientes = List.of(juan,ramonHernandez, luis);
-			customerCrudRepository.saveAll(clientes);
+			//customerCrudRepository.saveAll(clientes);
 		};
 	}
 
+	@Bean
+	public CommandLineRunner testAddressCrudRepositoryCommand(AddressCrudRepository addressCrudRepository){
+		return args -> {
+			addressCrudRepository.findAll()
+					.forEach(each -> {
+						System.out.println(each.getAddress() + " - " + each.getCustomer().getId());
+					});
+		};
+	}
 }

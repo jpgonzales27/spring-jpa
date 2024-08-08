@@ -70,6 +70,7 @@ public class Customer {
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }
