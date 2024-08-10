@@ -22,8 +22,11 @@ public class IntroSpringDataJpaApplication {
 	@Autowired
 	private CustomerCrudRepository customerCrudRepository;
 
+	@Autowired
+	private AddressCrudRepository addressCrudRepository;
+
 	@Bean
-	public CommandLineRunner testOneToOneRelationshipsCommand(){
+	public CommandLineRunner populateDatabaseCommand(){
 		return args -> {
 			Customer juan = new Customer();
 			juan.setName("Juan López");
@@ -39,8 +42,29 @@ public class IntroSpringDataJpaApplication {
 			juanAddressTwo.setAddress("Casa 654, Calle Principal Col. ABC, Tegucigalpa");
 
 
-			juan.setAddress(List.of(juanAddressOne, juanAddressTwo));
+			juan.addAddress(juanAddressOne);
+			juan.addAddress(juanAddressTwo);
+
 			customerCrudRepository.save(juan);
+		};
+	}
+
+	@Bean
+	public CommandLineRunner testOneToOneRelationshipsCommand(){
+		return args -> {
+			System.out.println("\nProbando relaciones bidireccionales entre address y customer\n");
+			addressCrudRepository.findAll()
+					.forEach(address -> {
+						String mensaje = "Direccion: " + address.getId() + ": "+address.getAddress()+", cliente: "+address.getCustomer().getUsername();
+						System.out.println(mensaje);
+					});
+
+			System.out.println("\nProbando relaciones bidireccionales entre customer y address\n");
+			customerCrudRepository.findAll()
+					.forEach(customer -> {
+						String mensaje = "Cliente: " + customer.getUsername() +", Cant Direcciones: "+ customer.getAddresses().size();
+						System.out.println(mensaje);
+					});
 		};
 	}
 }
